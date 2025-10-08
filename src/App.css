@@ -40,3 +40,40 @@
 .read-the-docs {
   color: #888;
 }
+
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f8f9fa;
+}
+
+.hero-section {
+  height: 90vh;
+  background: linear-gradient(135deg, #0d6efd, #212529);
+  color: white;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.logo {
+  width: 80px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.logo:hover {
+  transform: scale(1.2);
+}
+
+.features-section {
+  background-color: #ffffff;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  transition: 0.3s;
+}
+
+footer {
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
