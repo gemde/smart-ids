@@ -1,0 +1,177 @@
+/* AdminDashboard.css */
+
+/* Base layout */
+.admin-dashboard {
+    background: #0f172a;
+    color: #e2e8f0;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: "Segoe UI", sans-serif;
+  }
+  
+  /* Header */
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1e293b;
+    padding: 15px 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+  
+  .admin-header h1 {
+    font-size: 1.8rem;
+    color: #38bdf8;
+  }
+  
+  .admin-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .logout-btn {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .logout-btn:hover {
+    background: #b91c1c;
+  }
+  
+  /* Overview cards */
+  .overview {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .card {
+    background: #1e293b;
+    padding: 25px 20px;
+    border-radius: 12px;
+    flex: 1 1 200px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+  }
+  
+  .card h3 {
+    margin-bottom: 10px;
+    color: #38bdf8;
+  }
+  
+  .card p {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  
+  /* Sections */
+  .section {
+    margin-top: 30px;
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .section h2 {
+    margin-bottom: 15px;
+    color: #38bdf8;
+    font-size: 1.5rem;
+  }
+  
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #0f172a;
+  }
+  
+  table th,
+  table td {
+    border: 1px solid #334155;
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 0.95rem;
+  }
+  
+  table th {
+    background: #1e293b;
+    color: #38bdf8;
+  }
+  
+  table tbody tr:hover {
+    background: #334155;
+    transition: background 0.2s;
+  }
+  
+  .severity.high {
+    color: #f87171;
+    font-weight: 600;
+  }
+  
+  .severity.medium {
+    color: #fbbf24;
+    font-weight: 600;
+  }
+  
+  .severity.low {
+    color: #34d399;
+    font-weight: 600;
+  }
+  
+  /* System health box */
+  .health-box {
+    background: #0f172a;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.05);
+  }
+  
+  .health-box p {
+    margin: 5px 0;
+  }
+  
+  .cpu {
+    color: #fbbf24;
+    font-weight: 600;
+  }
+  
+  .mem {
+    color: #34d399;
+    font-weight: 600;
+  }
+  
+  /* Loading state */
+  .loading {
+    color: #38bdf8;
+    font-size: 22px;
+    text-align: center;
+    margin-top: 120px;
+  }
+  
+  /* Responsive tweaks */
+  @media (max-width: 768px) {
+    .overview {
+      flex-direction: column;
+    }
+    
+    .card {
+      flex: 1 1 100%;
+    }
+  }
+  

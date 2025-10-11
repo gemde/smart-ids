@@ -1,0 +1,98 @@
+/* OtpPage.css */
+.auth-page {
+    background: #0f172a;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Segoe UI", sans-serif;
+  }
+  
+  .auth-container {
+    background: #1e293b;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .auth-container h2 {
+    color: #38bdf8;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .auth-container p {
+    color: #cbd5e1;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .alert {
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  
+  .alert-danger {
+    background: #dc2626;
+    color: white;
+  }
+  
+  .alert-success {
+    background: #16a34a;
+    color: white;
+  }
+  
+  .otp-input {
+    background: #0f172a;
+    color: white;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    width: 45px;
+    height: 45px;
+    font-size: 1.25rem;
+    transition: border 0.2s;
+  }
+  
+  .otp-input:focus {
+    border-color: #38bdf8;
+    outline: none;
+    box-shadow: 0 0 5px #38bdf8;
+  }
+  
+  button.btn-primary {
+    background: #3b82f6;
+    border: none;
+    color: white;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  
+  button.btn-primary:hover:not(:disabled) {
+    background: #2563eb;
+  }
+  
+  button.btn-link {
+    color: #38bdf8;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  button.btn-link:hover:not(:disabled) {
+    text-decoration: underline;
+  }
+  
+  .text-muted {
+    color: #94a3b8 !important;
+  }
+  
+  .text-center {
+    text-align: center !important;
+  }
+  
