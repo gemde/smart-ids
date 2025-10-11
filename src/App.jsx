@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import OtpPage from "./pages/OtpPage";
 import AdminDashboard from "./pages/AdminDashboard";
+import UserDashboard from "./pages/UserDashboard";
 import "./App.css";
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/OtpPage" element={<OtpPage />} />
         <Route path="/AdminDashboard" element={<AdminDashboard />} />
+        <Route path="/UserDashboard" element={<UserDashboard />} />
       </Routes>
     </div>
   );
