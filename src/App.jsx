@@ -4,17 +4,16 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import OtpPage from "./pages/OtpPage";
 import AdminDashboard from "./pages/AdminDashboard";
-<<<<<<< HEAD
 import UserDashboard from "./pages/UserDashboard";
-=======
+import "./styles/App.css";
 
->>>>>>> 646ec0e (Save current changes before pull)
-import "./App.css";
+
 
 function App() {
   return (
     <AuthProvider>
       <div className="app-container">
+        {/* Navbar */}
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
           <div className="container">
             <Link className="navbar-brand fw-bold fs-4 text-uppercase" to="/">
@@ -31,6 +30,7 @@ function App() {
           </div>
         </nav>
 
+        {/* Routes */}
         <Routes>
           <Route
             path="/"
@@ -53,32 +53,19 @@ function App() {
                     </Link>
                   </div>
                 </div>
-<<<<<<< HEAD
-              </div>
-            </header>
-          }
-        />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/OtpPage" element={<OtpPage />} />
-        <Route path="/AdminDashboard" element={<AdminDashboard />} />
-        <Route path="/UserDashboard" element={<UserDashboard />} />
-      </Routes>
-    </div>
-=======
               </header>
             }
           />
 
-          {/* ✅ Correct, consistent route names */}
+          {/* Auth & Dashboards */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/otp" element={<OtpPage />} />
           <Route path="/admindashboard" element={<AdminDashboard />} />
+          <Route path="/userdashboard" element={<UserDashboard />} />
         </Routes>
       </div>
     </AuthProvider>
->>>>>>> 646ec0e (Save current changes before pull)
   );
 }
 

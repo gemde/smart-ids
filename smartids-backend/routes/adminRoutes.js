@@ -1,7 +1,8 @@
+// routes/adminRoutes.js
 import express from "express";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
-import db from "../config/db.js"; // Make sure this path matches your database config
+import db from "../config/db.js";
+import process from "process";
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key";
@@ -21,13 +22,13 @@ const verifyToken = (req, res, next) => {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
     next();
-  } catch (error) {
+  } catch {
     return res.status(403).json({ message: "Invalid or expired token." });
   }
 };
 
 // =============================
-// Middleware: Admin Only Access
+// Middleware: Admin Only
 // =============================
 const verifyAdmin = (req, res, next) => {
   if (req.user.role !== "admin")
@@ -36,14 +37,12 @@ const verifyAdmin = (req, res, next) => {
 };
 
 // =============================
-// ROUTES
+// ✅ Get All Users
 // =============================
-
-// ✅ GET all users (for admin dashboard)
 router.get("/users", verifyToken, verifyAdmin, async (req, res) => {
   try {
     const [rows] = await db.query(
-      "SELECT id, username, email, role, created_at FROM users"
+      "SELECT id, username, email, role, locked_until, created_at FROM users"
     );
     res.json(rows);
   } catch (error) {
@@ -52,73 +51,73 @@ router.get("/users", verifyToken, verifyAdmin, async (req, res) => {
   }
 });
 
-// ✅ CREATE new admin
-router.post("/create-admin", verifyToken, verifyAdmin, async (req, res) => {
+// =============================
+// ✅ Get Recent Login Attempts
+// =============================
+router.get("/login-attempts", verifyToken, verifyAdmin, async (req, res) => {
   try {
-    const { username, email, password } = req.body;
-
-    if (!username || !email || !password)
-      return res.status(400).json({ message: "All fields are required." });
-
-    // Check if email already exists
-    const [existing] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
-    if (existing.length > 0)
-      return res.status(400).json({ message: "Email already exists." });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await db.query(
-      "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'admin')",
-      [username, email, hashedPassword]
+    const [attempts] = await db.query(
+      `SELECT id, email, ip_address, success, created_at AS timestamp 
+       FROM login_attempts 
+       ORDER BY created_at DESC 
+       LIMIT 20`
     );
 
-    res.status(201).json({ message: "Admin created successfully." });
+    // Normalize results to match frontend keys
+    const formatted = attempts.map(a => ({
+      id: a.id,
+      email: a.email,
+      ip_address: a.ip_address,
+      success: a.success === 1,
+      timestamp: a.timestamp,
+    }));
+
+    res.json(formatted);
   } catch (error) {
-    console.error("Error creating admin:", error);
-    res.status(500).json({ message: "Server error while creating admin." });
+    console.error("Error fetching login attempts:", error);
+    res.status(500).json({ message: "Failed to fetch login attempts." });
   }
 });
 
-// ✅ UPDATE user or admin role
-router.put("/update-role/:id", verifyToken, verifyAdmin, async (req, res) => {
+// =============================
+// ✅ Get Suspicious Accounts
+// =============================
+router.get("/suspicious", verifyToken, verifyAdmin, async (req, res) => {
   try {
-    const { id } = req.params;
-    const { role } = req.body;
+    const [rows] = await db.query(`
+      SELECT email, COUNT(*) AS failed_attempts
+      FROM login_attempts
+      WHERE success = 0
+      GROUP BY email
+      HAVING failed_attempts >= 3
+      ORDER BY failed_attempts DESC
+      LIMIT 10
+    `);
 
-    if (!role) return res.status(400).json({ message: "Role is required." });
-
-    await db.query("UPDATE users SET role = ? WHERE id = ?", [role, id]);
-    res.json({ message: "User role updated successfully." });
+    res.json(rows);
   } catch (error) {
-    console.error("Error updating role:", error);
-    res.status(500).json({ message: "Failed to update role." });
+    console.error("Error fetching suspicious accounts:", error);
+    res.status(500).json({ message: "Failed to fetch suspicious accounts." });
   }
 });
 
-// ✅ DELETE a user or admin
-router.delete("/delete/:id", verifyToken, verifyAdmin, async (req, res) => {
-  try {
-    const { id } = req.params;
-    await db.query("DELETE FROM users WHERE id = ?", [id]);
-    res.json({ message: "User deleted successfully." });
-  } catch (error) {
-    console.error("Error deleting user:", error);
-    res.status(500).json({ message: "Failed to delete user." });
-  }
-});
-
-// ✅ ADMIN SUMMARY STATS
+// =============================
+// ✅ Admin Summary Stats
+// =============================
 router.get("/stats", verifyToken, verifyAdmin, async (req, res) => {
   try {
     const [users] = await db.query("SELECT COUNT(*) AS totalUsers FROM users");
-    const [admins] = await db.query("SELECT COUNT(*) AS totalAdmins FROM users WHERE role = 'admin'");
-    const [datasets] = await db.query("SELECT COUNT(*) AS totalDatasets FROM datasets");
-    const [contests] = await db.query("SELECT COUNT(*) AS totalContests FROM contests");
+    const [admins] = await db.query(
+      "SELECT COUNT(*) AS totalAdmins FROM users WHERE role = 'admin'"
+    );
+    const [attempts] = await db.query(
+      "SELECT COUNT(*) AS totalAttempts FROM login_attempts"
+    );
 
     res.json({
       totalUsers: users[0].totalUsers,
       totalAdmins: admins[0].totalAdmins,
-      totalDatasets: datasets[0]?.totalDatasets || 0,
-      totalContests: contests[0]?.totalContests || 0,
+      totalAttempts: attempts[0].totalAttempts,
     });
   } catch (error) {
     console.error("Error fetching stats:", error);

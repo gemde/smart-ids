@@ -1,0 +1,158 @@
+/* ---------------- Root & Global ---------------- */
+#root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f6fa;
+    color: #212529;
+  }
+  
+  /* ---------------- Logos ---------------- */
+  .logo {
+    width: 80px;
+    height: auto;
+    padding: 1rem;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    will-change: transform, filter;
+  }
+  .logo:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 1.5em rgba(0, 0, 0, 0.25));
+  }
+  .logo.react:hover {
+    filter: drop-shadow(0 0 1.5em #61dafbaa);
+  }
+  
+  /* Optional spinning effect for logos */
+  @keyframes logo-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    a:nth-of-type(2) .logo {
+      animation: logo-spin infinite 20s linear;
+    }
+  }
+  
+  /* ---------------- Hero Section ---------------- */
+  .hero-section {
+    height: 90vh;
+    background: linear-gradient(135deg, #0d6efd, #212529);
+    color: #ffffff;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+  }
+  
+  .hero-section h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    animation: fadeIn 1s forwards;
+  }
+  
+  .hero-section p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #e0e0e0;
+    animation: fadeIn 1.5s forwards;
+  }
+  
+  .hero-section .btn {
+    margin: 0.5rem;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .hero-section .btn-primary {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+  }
+  .hero-section .btn-primary:hover {
+    background-color: #ffcd39;
+    transform: scale(1.05);
+  }
+  
+  .hero-section .btn-outline-light {
+    color: #ffffff;
+    border-color: #ffffff;
+  }
+  .hero-section .btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+  }
+  
+  /* ---------------- Features Section ---------------- */
+  .features-section {
+    padding: 4rem 2rem;
+    background-color: #ffffff;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+  }
+  
+  .card {
+    background: #ffffff;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 2rem;
+    width: 300px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+  
+  /* ---------------- Footer ---------------- */
+  footer {
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    background: #212529;
+    color: #ffffff;
+    padding: 2rem 1rem;
+    text-align: center;
+  }
+  
+  /* ---------------- Animations ---------------- */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* ---------------- Responsiveness ---------------- */
+  @media (max-width: 768px) {
+    .hero-section h1 {
+      font-size: 2.2rem;
+    }
+  
+    .hero-section p {
+      font-size: 1rem;
+    }
+  
+    .features-section {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .card {
+      width: 90%;
+    }
+  }
+  

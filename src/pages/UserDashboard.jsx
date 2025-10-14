@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./UserDashboard.css";
+import "../styles/UserDashboard.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function UserDashboard() {
@@ -24,7 +24,6 @@ function UserDashboard() {
   useEffect(() => {
     if (!token) return;
 
-    // Decode token to get user info
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
       setUser({ username: payload.username || payload.email, id: payload.id });
@@ -32,7 +31,6 @@ function UserDashboard() {
       console.warn("Failed to decode JWT");
     }
 
-    // Fetch files
     const fetchUserFiles = async () => {
       try {
         const res = await axios.get(`${apiBase}/files/my`, {
@@ -48,7 +46,7 @@ function UserDashboard() {
     fetchPasswords();
   }, [token]);
 
-  // Fetch encrypted passwords from backend
+  // Fetch encrypted passwords
   const fetchPasswords = async () => {
     if (!user.id) return;
     try {
@@ -65,7 +63,7 @@ function UserDashboard() {
     window.location.href = "/login";
   };
 
-  // File upload handlers
+  // File upload
   const handleFileChange = (e) => setFileToUpload(e.target.files[0]);
 
   const uploadFile = async (e) => {
@@ -97,7 +95,7 @@ function UserDashboard() {
     }
   };
 
-  // Create file share
+  // Create share link
   const createShare = async (fileId) => {
     const minutes = prompt("Enter share expiry time (in minutes):", "60");
     if (!minutes) return;
@@ -113,7 +111,7 @@ function UserDashboard() {
     }
   };
 
-  // Save password via backend
+  // Save password
   const savePassword = async () => {
     if (!service.trim() || !password.trim()) {
       return alert("Enter both service and password!");
@@ -128,13 +126,13 @@ function UserDashboard() {
       alert(`Password saved! Keep this key safe: ${res.data.key}`);
       setService("");
       setPassword("");
-      fetchPasswords(); // refresh list
+      fetchPasswords();
     } catch (err) {
       alert(err.response?.data?.message || "Failed to save password");
     }
   };
 
-  // Decrypt password via backend
+  // Decrypt password
   const handleDecrypt = async (entry) => {
     const providedKey = decryptInputs[entry.id];
     if (!providedKey?.trim()) return alert("Enter your decryption key!");
@@ -145,7 +143,10 @@ function UserDashboard() {
         key: providedKey,
       });
 
-      setDecryptedResults((prev) => ({ ...prev, [entry.id]: res.data.decrypted }));
+      setDecryptedResults((prev) => ({
+        ...prev,
+        [entry.id]: res.data.decrypted,
+      }));
     } catch (err) {
       const msg = err.response?.data?.message || "Decryption failed!";
       setDecryptedResults((prev) => ({ ...prev, [entry.id]: msg }));
@@ -153,44 +154,65 @@ function UserDashboard() {
   };
 
   return (
-    <div className="user-dashboard container py-5">
+    <div className="user-dashboard container-fluid py-5 fade-in">
       {/* Header */}
-      <header className="d-flex justify-content-between align-items-center mb-4">
-        <h3 className="fw-bold">
+      <div className="dashboard-header">
+        <h2 className="dashboard-title">
           Welcome, <span className="username">{user.username}</span>
-        </h3>
+        </h2>
         <div>
-          <button className="btn btn-outline-primary me-2" onClick={() => window.location.reload()}>
+          <button
+            className="btn btn-gradient me-3"
+            onClick={() => window.location.reload()}
+          >
             Refresh
           </button>
           <button className="btn btn-danger" onClick={handleLogout}>
             Logout
           </button>
         </div>
-      </header>
+      </div>
 
+      {/* Upload & Vault */}
       <div className="row g-4">
         {/* File Upload Card */}
-        <div className="col-md-6">
-          <section className="card shadow-lg border-0 h-100">
+        <div className="col-lg-6">
+          <section className="card shadow-soft border-0 h-100">
             <div className="card-body">
-              <h5 className="card-title text-primary">🔐 Upload & Encrypt Files</h5>
-              <form onSubmit={uploadFile} className="d-flex flex-wrap gap-3 align-items-center">
-                <input type="file" className="form-control" onChange={handleFileChange} />
-                <button className="btn btn-gradient" type="submit" disabled={loading}>
+              <h5 className="card-title text-primary mb-3">
+                🔐 Upload & Encrypt Files
+              </h5>
+              <form
+                onSubmit={uploadFile}
+                className="d-flex flex-wrap gap-3 align-items-center"
+              >
+                <input
+                  type="file"
+                  className="form-control"
+                  onChange={handleFileChange}
+                />
+                <button
+                  className="btn btn-gradient"
+                  type="submit"
+                  disabled={loading}
+                >
                   {loading ? "Encrypting..." : "Upload"}
                 </button>
               </form>
-              <small className="text-muted d-block mt-2">Files are encrypted using AES + HMAC.</small>
+              <small className="text-muted mt-2 d-block">
+                Files are encrypted with AES + HMAC for extra protection.
+              </small>
             </div>
           </section>
         </div>
 
         {/* Password Vault */}
-        <div className="col-md-6">
-          <section className="card shadow-lg border-0 h-100">
+        <div className="col-lg-6">
+          <section className="card shadow-soft border-0 h-100">
             <div className="card-body">
-              <h5 className="card-title text-success">🧩 Secure Password Vault</h5>
+              <h5 className="card-title text-success mb-3">
+                🧩 Secure Password Vault
+              </h5>
               <input
                 type="text"
                 className="form-control mb-2"
@@ -211,38 +233,45 @@ function UserDashboard() {
 
               <hr />
               <h6 className="text-muted mt-3">🔒 Saved Encrypted Passwords</h6>
-              <ul className="list-group list-group-flush mt-2">
+              <div className="vault-list mt-3">
                 {encryptedPasswords.length === 0 && (
-                  <li className="list-group-item text-muted text-center">No passwords saved yet.</li>
+                  <p className="text-center text-muted small">
+                    No passwords saved yet.
+                  </p>
                 )}
                 {encryptedPasswords.map((p) => (
-                  <li key={p.id} className="list-group-item">
+                  <div
+                    key={p.id}
+                    className="p-3 mb-3 rounded shadow-sm border bg-light"
+                  >
                     <strong>{p.service}</strong>
-                    <div className="text-break small">{p.data}</div>
-
-                    <div className="mt-2">
-                      <input
-                        type="text"
-                        placeholder="Enter key to decrypt"
-                        className="form-control form-control-sm mb-2"
-                        value={decryptInputs[p.id] || ""}
-                        onChange={(e) =>
-                          setDecryptInputs({ ...decryptInputs, [p.id]: e.target.value })
-                        }
-                      />
-                      <button className="btn btn-sm btn-outline-success" onClick={() => handleDecrypt(p)}>
-                        Decrypt
-                      </button>
-
-                      {decryptedResults[p.id] && (
-                        <div className="mt-2 alert alert-info p-2 small">
-                          <strong>Decrypted Password:</strong> {decryptedResults[p.id]}
-                        </div>
-                      )}
-                    </div>
-                  </li>
+                    <div className="small text-break">{p.data}</div>
+                    <input
+                      type="text"
+                      placeholder="Enter key to decrypt"
+                      className="form-control form-control-sm mt-2 mb-2"
+                      value={decryptInputs[p.id] || ""}
+                      onChange={(e) =>
+                        setDecryptInputs({
+                          ...decryptInputs,
+                          [p.id]: e.target.value,
+                        })
+                      }
+                    />
+                    <button
+                      className="btn btn-sm btn-outline-success"
+                      onClick={() => handleDecrypt(p)}
+                    >
+                      Decrypt
+                    </button>
+                    {decryptedResults[p.id] && (
+                      <div className="alert alert-info mt-2 p-2 small">
+                        <strong>Decrypted:</strong> {decryptedResults[p.id]}
+                      </div>
+                    )}
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           </section>
         </div>
@@ -250,7 +279,7 @@ function UserDashboard() {
 
       {/* Share Info */}
       {shareInfo && (
-        <div className="alert alert-success shadow-sm fade-in mt-4">
+        <div className="alert alert-success shadow-soft fade-in mt-4">
           <strong>Share link created:</strong>{" "}
           <a href={shareInfo.url} target="_blank" rel="noreferrer">
             {shareInfo.url}
@@ -260,44 +289,48 @@ function UserDashboard() {
       )}
 
       {/* Files Table */}
-      <section className="card shadow-lg border-0 fade-in mt-4">
-        <div className="card-body">
-          <h5 className="card-title text-primary">Your Files</h5>
-          <div className="table-responsive">
-            <table className="table table-hover align-middle">
-              <thead className="table-gradient text-white">
-                <tr>
-                  <th>File</th>
-                  <th>Uploaded</th>
-                  <th>Expires</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {Array.isArray(files) && files.length > 0 ? (
-                  files.map((f) => (
-                    <tr key={f.id}>
-                      <td>{f.filename_original || f.filename}</td>
-                      <td>{new Date(f.created_at).toLocaleString()}</td>
-                      <td>{f.expires_at ? new Date(f.expires_at).toLocaleString() : "Never"}</td>
-                      <td>
-                        <button className="btn btn-sm btn-outline-success me-2" onClick={() => createShare(f.id)}>
-                          Share
-                        </button>
-                       
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" className="text-muted text-center">
-                      No files uploaded yet.
+      <section className="card shadow-soft border-0 fade-in mt-5">
+        <div className="card-body table-container">
+          <h5 className="card-title text-primary mb-3">📁 Your Files</h5>
+          <table className="table table-hover align-middle table-gradient">
+            <thead>
+              <tr>
+                <th>File</th>
+                <th>Uploaded</th>
+                <th>Expires</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array.isArray(files) && files.length > 0 ? (
+                files.map((f) => (
+                  <tr key={f.id}>
+                    <td>{f.filename_original || f.filename}</td>
+                    <td>{new Date(f.created_at).toLocaleString()}</td>
+                    <td>
+                      {f.expires_at
+                        ? new Date(f.expires_at).toLocaleString()
+                        : "Never"}
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-sm btn-outline-success me-2"
+                        onClick={() => createShare(f.id)}
+                      >
+                        Share
+                      </button>
                     </td>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="text-center text-muted py-4">
+                    No files uploaded yet.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </section>
     </div>

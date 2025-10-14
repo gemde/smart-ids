@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
   });
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [otpEmail, setOtpEmail] = useState(null);
+  const [otpExpiry, setOtpExpiry] = useState(null); // OTP expiration timestamp
   const [loading, setLoading] = useState(true);
 
   // Save token & user to state and localStorage
@@ -36,7 +37,9 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
 
       if (res.ok) {
-        setOtpEmail(email); // save email for OTP page
+        setOtpEmail(email);
+        // Set OTP expiry for 1 minute from now
+        setOtpExpiry(Date.now() + 60 * 1000);
         navigate("/otp", { state: { email } });
         return { success: true, message: data.message };
       } else {
@@ -50,6 +53,11 @@ export const AuthProvider = ({ children }) => {
 
   // VERIFY OTP → complete login
   const verifyOtp = async (email, otp) => {
+    // Check for expiry before sending request
+    if (otpExpiry && Date.now() > otpExpiry) {
+      return { success: false, message: "OTP has expired. Please request a new one." };
+    }
+
     try {
       const res = await fetch(`${API_BASE_URL}/verify-otp`, {
         method: "POST",
@@ -59,10 +67,10 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
 
       if (res.ok) {
-        // data.user should contain id, username, email, role
         const userData = data.user;
         saveAuthData(data.token, userData);
         setOtpEmail(null);
+        setOtpExpiry(null);
 
         // Redirect based on role
         if (userData.role === "admin") navigate("/admindashboard", { replace: true });
@@ -83,6 +91,7 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setUser(null);
     setOtpEmail(null);
+    setOtpExpiry(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login", { replace: true });
@@ -123,6 +132,7 @@ export const AuthProvider = ({ children }) => {
     token,
     otpEmail,
     setOtpEmail,
+    otpExpiry,
     login,
     verifyOtp,
     logout,
