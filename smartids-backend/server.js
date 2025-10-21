@@ -9,7 +9,7 @@ import rateLimit from "express-rate-limit";
 import os from "os";
 import process from "process";
 
-// ✅ Import database & routes
+// Import database & routes
 import pool from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
@@ -18,18 +18,18 @@ import vaultRoutes from "./routes/vaultRoutes.js";
 import otpRoutes from "./routes/otpRoutes.js";
 
 // =======================
-// 🌐 Load environment variables
+// Load environment variables
 // =======================
 dotenv.config();
 
 // =======================
-// 🏗 Initialize app & server
+// Initialize app & server
 // =======================
 const app = express();
 const server = http.createServer(app);
 
 // =======================
-// 🌐 Utility: Get local network IP
+// Utility: Get local network IP
 // =======================
 function getLocalIp() {
   const interfaces = os.networkInterfaces();
